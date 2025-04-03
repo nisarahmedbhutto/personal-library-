@@ -10,11 +10,10 @@ import plotly.graph_objects as go
 from streamlit_lottie import st_lottie
 import requests
 
-
 # set page config
 
 st.set_page_config(
-    page_title="Personal \ Library Management System",
+    page_title="Personal Library Management System",
     page_icon="📚",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -22,79 +21,79 @@ st.set_page_config(
 
 # custo css
 
-st.markdown(
-    """
-        <style>
-            .main-header{
-                font-size:3rem !important;
-                color:#1E3ABA;
-                font-weight:700;
-                margin-bottom:1rem;
-                text-align:center;
-                text-shadow:2px 2px 4px rgba(0,0,0,0,1);
-            }
-            .sub_header{
-                font-size:1.8rem !important;
-                color:3BB2f6;
-                font-weight:1rem;
-                margin-top:1rem;
-                margin-bottom:1rem;
-            }
-            .sucsess-message{
-                padding:1rem;
-                background-color:#ECFDFS;
-                border-left:5px solid #10B981;
-                border-radius:0.375rem;
-            }
-            .warning-message{
-                padding:1rem;
-                background-color:#FEF3C7;
-                border-left:5px solid #F59E0B;
-                border-radius:0.375rem;
-            }
-            .book-card{
-                background-color: #F3F4F6;
-                border-radius:0.5rem;
-                padding:1rem;
-                margin-bottom:1rem;
-                border-left:5px solid #3BB2F6;
-                transition:transform 0.3s ease;
+st.markdown("""
+<style>
 
-            }
-            .book-card-hover{
-                transform:translateY(-5px);
-                box-shadow:0 10px 15px -3px rgba(0,0,0,0,1);
+    .main-header{
+        font-size:3rem !important;
+        color:#1E3A8A;
+        font-weight:700;
+        margin-bottom:1rem;
+        text-align:center;
+        text-shadow:2px 2px 4px rgba(0,0,0,0,1);
+    }
+    .sub_header{
+        font-size:1.8rem !important;
+        color:3BB2F6;
+        font-weight:600;
+        margin-top:1rem;
+        margin-bottom:1rem;
+    }
+    .sucsess-message{
+        padding:1rem;
+        background-color:#ECFDFS;
+        border-left:5px solid #10B981;
+        border-radius:0.375rem;
+    }
+    .warning-message{
+        padding:1rem;
+        background-color:#FEF3C7;
+        border-left:5px solid #F59E0B;
+        border-radius:0.375rem;
+    }
+    .book-card{
+        background-color: #F3F4F6;
+        border-radius:0.5rem;
+        padding:1rem;
+        margin-bottom:1rem;
+        border-left:5px solid #3BB2F6;
+        transition:transform 0.3s ease;
 
-            }
-            .read-badge{
-                background-color:#10B981;
-                color:wight;
-                padding:0.25rem 0.75rem;
-                border-radius:1rem;
-                font-size:0.875rem;
-                font-weight:600;
+    }
+    .book-card-hover{
+        transform:translateY(-5px);
+        box-shadow:0 10px 15px -3px rgba(0,0,0,0,1);
 
-            }
-            .unread-badge{
-                background-color:#F87171;
-                color:wight;
-                padding:0.25rem 0.75rem;
-                border-radius:1rem;
-                font-size:0.875rem;
-                font-weight:600;
+    }
+    .read-badge{
+        background-color:#10B981;
+        color:white;
+        padding:0.25rem 0.75rem;
+        border-radius:1rem;
+        font-size:0.875rem;
+        font-weight:600;
 
-            }
-            .action-button{
-                margin-right:0.5rem;
+    }
+    .unread-badge{
+        background-color:#F87171;
+        color:white;
+        padding:0.25rem 0.75rem;
+        border-radius:1rem;
+        font-size:0.875rem;
+        font-weight:600;
 
-            }
-            .stButton>button{
-                border-radius:0.375rem;
-            }
-        </style>
+    }
+    .action-button{
+        margin-right:0.5rem;
 
-    """
-, unsafe_allow_html=True)
+    }
+    .stButton>button{
+        border-radius:0.375rem;
+    }
+    
+</style>
+
+""", unsafe_allow_html=True)
 
 
 def load_lottieurl(url):
@@ -119,11 +118,11 @@ if 'current_view' not in st.session_state:
     st.session_state.current_view = "library"
 
 
-
+# load library
 def load_library():
     try:
-        if os.path.exists('library_json'):
-            with open('library_json','r') as file:
+        if os.path.exists('library.json'):
+            with open('library.json','r') as file:
                 st.session_state.library = json.load(file)
                 return True
             return False
@@ -145,22 +144,22 @@ def save_library():
     
 
 # add a book to library
-    def add_book(title,auther,publication_year,genre,read_status):
-        book = {
-            "title":title,
-            "auther":auther,
-            "publication_year":publication_year,
-            "genre":genre,
-            "read_status":read_status,
-            "added_date":datetime.now().strftime("%y-%m-%d %h:%m:%s")
-        }
-        st.session_state.library.append(book)
-        save_library()
-        st.session_state.book_added = True
-        time.sleep(0.5)
+def add_book(title,auther,publication_year,genre,read_status):
+    book = {
+        "title":title,
+        "auther":auther,
+        "publication_year":publication_year,
+        "genre":genre,
+        "read_status":read_status,
+        "added_date":datetime.now().strftime("%y-%m-%d %h:%m:%s")
+    }
+    st.session_state.library.append(book)
+    save_library()
+    st.session_state.book_added = True
+    time.sleep(0.5)
 
 
-
+# remove books
 def remove_book(index):
     if 0 <= index < len(st.session_state.library):
 
@@ -356,8 +355,6 @@ elif st.session_state.current_view == "library":
                                 "Read" if book["read_status"] else "Unread"
                             }</span></p>
                             </div>
-
-
 """,unsafe_allow_html=True)
                 col1,col2 = st.columns(2)
                 with col1:
@@ -429,6 +426,5 @@ elif st.session_state.current_view == "stats":
 st.markdown("---")
 st.markdown("Copywright @ Misar Ahmed Personal Library Manager",unsafe_allow_html=True)
         
-
 
 
