@@ -122,13 +122,17 @@ if 'current_view' not in st.session_state:
 def load_library():
     try:
         if os.path.exists('library.json'):
-            with open('library.json','r') as file:
+            with open('library.json', 'r', encoding='utf-8') as file:
                 st.session_state.library = json.load(file)
-                return True
-            return False
+            return True  # Move return statement outside 'with' block
+        return False
+    except json.JSONDecodeError as e:
+        st.error(f"JSON Decode Error: {e}")
+        return False
     except Exception as e:
         st.error(f"Error Loading Library: {e}")
         return False
+
     
 
 # save library
@@ -191,9 +195,9 @@ def get_library_stats():
     read_books = sum(1 for book in st.session_state.library if book['read_status'])
     percent_read = (read_books / total_books * 100) if total_books > 0 else 0
 
-    genres = {}
-    authers ={}
-    decades ={}
+    genres = {}  # Empty dictionary
+    authers = {}  # Empty dictionary
+    decades = {}  # Empty dictionary
 
     for book in st.session_state.library:
         if book["genre"] in genres:
@@ -219,6 +223,7 @@ def get_library_stats():
     authers = dict(sorted(authers.items(), key=lambda x: x[1], reverse=True))
     decades = dict(sorted(decades.items(), key=lambda x: x[0]))
 
+
     return {
         'total_books':total_books,
         'read_books':read_books,
@@ -235,6 +240,7 @@ def create_visulations(stats):
             values = [stats['read_books'],stats['total_books'] - stats['read_books']],
             hole = .4,
             marker_colors = ['#10B981','#F87171']
+
         )])
         fig_read_status.update_layout(
             title_text = 'Read vs Unread Books',
@@ -253,15 +259,16 @@ def create_visulations(stats):
             x='Genre',
             y='Count',
             color='Count',
-            color_continous_scale=px.colors.sequential.Blues
+            color_continuous_scale=px.colors.sequential.Blues
+
         )
         fig_genres.update_layout(
-            title_text = 'Book by publication genres',
+            title_text = 'Book by publication decade',
             xaxis_title = 'Genres',
             yaxis_title = 'Numbers of Books',
             height = 400
         )
-        st.plotly_chart(fig_genres, use_container_width=True)
+        st.plotly_chart(fig_decades, use_container_width=True)
     if stats['decades']:
         decades_df = pd.DataFrame({
             'Decade':[f"{decade}s" for decade in stats['decades'].keys()],
@@ -286,13 +293,13 @@ def create_visulations(stats):
         # load library
 load_library()
 st.sidebar.markdown("<h1 style='text-align: center'> Navigation</h1>",unsafe_allow_html=True)
-lottie_book = load_lottieurl("https://github.com/nisarahmedbhutto/personal-library-/blob/main/library.json")
+lottie_book = load_lottieurl(https://github.com/nisarahmedbhutto/personal-library-/blob/main/library.json)
 if lottie_book:
     with st.sidebar:
         st_lottie(lottie_book,height=200,key='book_animation')
 
 nav_options = st.sidebar.radio(
-    "choose an option:",
+    "choose an option",
     ["View Library","Add Book","Search Books","Library Statistics"]
 )
 
@@ -334,7 +341,7 @@ if st.session_state.current_view == "add":
             add_book(title,auther,publication_year,genre,read_bool)
 
     if st.session_state.book_added:
-        st.markdown("<div class='sucsess-message'> Book added Sucsessfuly ! </div>",unsafe_allow_html=True)
+        st.markdown("<div class='sucess-message'> Book added Sucessfuly ! </div>",unsafe_allow_html=True)
         st.balloons()
         st.session_state.book_added =False
 elif st.session_state.current_view == "library":
@@ -415,7 +422,8 @@ elif st.session_state.current_view == "stats":
         with col2:
             st.metric("Books Read",stats["read_books"])
         with col3:
-            st.metric("Percentage Read ",f"{stats["percentage_read"]:.1f}%")
+            st.metric("Percentage Read ", f"{stats['percent_read']:.1f}%")
+
         create_visulations()
 
         if stats["authers"]:
