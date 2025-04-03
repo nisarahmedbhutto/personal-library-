@@ -242,10 +242,10 @@ def create_visulations(stats):
         )])
         fig_read_status.update_layout(
             title_text = 'Read vs Unread Books',
-            showlegend = True,  # Fixed typo here
+            showlegend = True,
             height = 400
         )
-        st.plotly_chart(fig_read_status, use_container_width=True)
+        st.plotly_chart(fig_read_status, use_container_width=True, key="read_status_pie_chart")
 
     # Bar chart for genres
     if stats['genres']:
@@ -261,12 +261,12 @@ def create_visulations(stats):
             color_continuous_scale=px.colors.sequential.Blues
         )
         fig_genres.update_layout(
-            title_text = 'Books by Genre',  # Fixed title
+            title_text = 'Books by Genre',
             xaxis_title = 'Genres',
             yaxis_title = 'Number of Books',
             height = 400
         )
-        st.plotly_chart(fig_genres, use_container_width=True)
+        st.plotly_chart(fig_genres, use_container_width=True, key="genre_bar_chart")
 
     # Line chart for decades
     if stats['decades']:
@@ -282,14 +282,13 @@ def create_visulations(stats):
             line_shape='spline'
         )
         fig_decades.update_layout(
-            title_text = 'Books by Publication Decade',  # Fixed title
+            title_text = 'Books by Publication Decade',
             xaxis_title = 'Decade',
             yaxis_title = 'Number of Books',
             height = 400
         )
-        st.plotly_chart(fig_decades, use_container_width=True)
+        st.plotly_chart(fig_decades, use_container_width=True, key="decade_line_chart")
 
-        st.plotly_chart(fig_decades, use_container_width=True)
     if stats['decades']:
         decades_df = pd.DataFrame({
             'Decade':[f"{decade}s" for decade in stats['decades'].keys()],
