@@ -232,27 +232,26 @@ def get_library_stats():
         'decades': decades_dict  # Return the corrected dictionary
     }
 
-
 def create_visulations(stats):
     if stats['total_books'] > 0:
         fig_read_status = go.Figure(data=[go.Pie(
             labels = ['Read','Unread'],
-            values = [stats['read_books'],stats['total_books'] - stats['read_books']],
+            values = [stats['read_books'], stats['total_books'] - stats['read_books']],
             hole = .4,
             marker_colors = ['#10B981','#F87171']
-
         )])
         fig_read_status.update_layout(
             title_text = 'Read vs Unread Books',
-            showlengend = True,
+            showlegend = True,  # Fixed typo here
             height = 400
         )
         st.plotly_chart(fig_read_status, use_container_width=True)
-    # bar chart genre
+
+    # Bar chart for genres
     if stats['genres']:
         genres_df = pd.DataFrame({
-            'Genre':list(stats['genres'].keys()),
-            'Count':list(stats['genres'].values())
+            'Genre': list(stats['genres'].keys()),
+            'Count': list(stats['genres'].values())
         })
         fig_genres = px.bar(
             genres_df,
@@ -260,14 +259,36 @@ def create_visulations(stats):
             y='Count',
             color='Count',
             color_continuous_scale=px.colors.sequential.Blues
-
         )
         fig_genres.update_layout(
-            title_text = 'Book by publication decade',
+            title_text = 'Books by Genre',  # Fixed title
             xaxis_title = 'Genres',
-            yaxis_title = 'Numbers of Books',
+            yaxis_title = 'Number of Books',
             height = 400
         )
+        st.plotly_chart(fig_genres, use_container_width=True)
+
+    # Line chart for decades
+    if stats['decades']:
+        decades_df = pd.DataFrame({
+            'Decade': [f"{decade}s" for decade in stats['decades'].keys()],
+            'Count': list(stats['decades'].values())
+        })
+        fig_decades = px.line(
+            decades_df,
+            x='Decade',
+            y='Count',
+            markers=True,
+            line_shape='spline'
+        )
+        fig_decades.update_layout(
+            title_text = 'Books by Publication Decade',  # Fixed title
+            xaxis_title = 'Decade',
+            yaxis_title = 'Number of Books',
+            height = 400
+        )
+        st.plotly_chart(fig_decades, use_container_width=True)
+
         st.plotly_chart(fig_decades, use_container_width=True)
     if stats['decades']:
         decades_df = pd.DataFrame({
