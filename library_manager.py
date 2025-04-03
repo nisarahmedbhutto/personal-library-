@@ -197,7 +197,7 @@ def get_library_stats():
 
     genres = {}  # Empty dictionary
     authers = {}  # Empty dictionary
-    decades = {}  # Empty dictionary
+    decades_dict = {}  # Change variable name to avoid conflict
 
     for book in st.session_state.library:
         if book["genre"] in genres:
@@ -212,26 +212,26 @@ def get_library_stats():
             authers[book['auther']] = 1
 
         # count decades
-        decades = (book['publication_year'] // 10) * 10
-        if decades in decades:
-            decades[decades] += 1
+        decade = (book['publication_year'] // 10) * 10  # Rename variable to decade
+        if decade in decades_dict:  # Use decades_dict here
+            decades_dict[decade] += 1
         else:
-            genres[decades] = 1
+            decades_dict[decade] = 1
 
     # sort by count
     genres = dict(sorted(genres.items(), key=lambda x: x[1], reverse=True))
     authers = dict(sorted(authers.items(), key=lambda x: x[1], reverse=True))
-    decades = dict(sorted(decades.items(), key=lambda x: x[0]))
-
+    decades_dict = dict(sorted(decades_dict.items(), key=lambda x: x[0]))
 
     return {
-        'total_books':total_books,
-        'read_books':read_books,
-        'percent_read':percent_read,
-        'genres':genres,
-        'authers':authers,
-        'decades':decades
+        'total_books': total_books,
+        'read_books': read_books,
+        'percent_read': percent_read,
+        'genres': genres,
+        'authers': authers,
+        'decades': decades_dict  # Return the corrected dictionary
     }
+
 
 def create_visulations(stats):
     if stats['total_books'] > 0:
