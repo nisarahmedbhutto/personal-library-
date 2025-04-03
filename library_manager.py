@@ -5,9 +5,9 @@ import os
 from datetime import datetime 
 import time
 import random
-import plotly.express as px
-import plotly.graph_objects as go
-from streamlit_lottie import st_lottie
+# import plotly.express as px
+# import plotly.graph_objects as go
+# from streamlit_lottie import st_lottie
 import requests
 
 
