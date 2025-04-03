@@ -122,13 +122,17 @@ if 'current_view' not in st.session_state:
 def load_library():
     try:
         if os.path.exists('library.json'):
-            with open('library.json','r') as file:
+            with open('library.json', 'r', encoding='utf-8') as file:
                 st.session_state.library = json.load(file)
-                return True
-            return False
+            return True  # Move return statement outside 'with' block
+        return False
+    except json.JSONDecodeError as e:
+        st.error(f"JSON Decode Error: {e}")
+        return False
     except Exception as e:
         st.error(f"Error Loading Library: {e}")
         return False
+
     
 
 # save library
@@ -188,12 +192,12 @@ def search_books(search_term,search_by):
 # calculation library status
 def get_library_stats():
     total_books = len(st.session_state.library)
-    read_books = sum(1 for book in st.session_state.library if book['read status'])
+    read_books = sum(1 for book in st.session_state.library if book['read_status'])
     percent_read = (read_books / total_books * 100) if total_books > 0 else 0
 
-    genres = []
-    authers = []
-    decades = []
+    genres = {}  # Empty dictionary
+    authers = {}  # Empty dictionary
+    decades = {}  # Empty dictionary
 
     for book in st.session_state.library:
         if book["genre"] in genres:
@@ -215,9 +219,10 @@ def get_library_stats():
             genres[decades] = 1
 
     # sort by count
-    genres = dict(sorted(genres.index(), key=lambda x: x[1], reverse=True))
-    authers = dict(sorted(authers.index(), key=lambda x: x[1], reverse=True))
-    decades = dict(sorted(decades.index(), key=lambda x: x[0]))
+    genres = dict(sorted(genres.items(), key=lambda x: x[1], reverse=True))
+    authers = dict(sorted(authers.items(), key=lambda x: x[1], reverse=True))
+    decades = dict(sorted(decades.items(), key=lambda x: x[0]))
+
 
     return {
         'total_books':total_books,
@@ -234,7 +239,8 @@ def create_visulations(stats):
             labels = ['Read','Unread'],
             values = [stats['read_books'],stats['total_books'] - stats['read_books']],
             hole = .4,
-            market_colors = ['#10B981','#F87171']
+            marker_colors = ['#10B981','#F87171']
+
         )])
         fig_read_status.update_layout(
             title_text = 'Read vs Unread Books',
@@ -253,7 +259,8 @@ def create_visulations(stats):
             x='Genre',
             y='Count',
             color='Count',
-            color_continous_scale=px.colors.sequential.Blues
+            color_continuous_scale=px.colors.sequential.Blues
+
         )
         fig_genres.update_layout(
             title_text = 'Book by publication decade',
@@ -272,7 +279,7 @@ def create_visulations(stats):
             x='Decade',
             y='Count',
             markers=True,
-            line_sape='spline'
+            line_shape='spline'
         )
         fig_decades.update_layout(
             title_text = 'Book by publication decade',
@@ -415,7 +422,8 @@ elif st.session_state.current_view == "stats":
         with col2:
             st.metric("Books Read",stats["read_books"])
         with col3:
-            st.metric("Percentage Read ",f"{stats["percentage_read"]:.1f}%")
+            st.metric("Percentage Read ", f"{stats['percent_read']:.1f}%")
+
         create_visulations()
 
         if stats["authers"]:
