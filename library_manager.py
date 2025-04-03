@@ -409,28 +409,28 @@ elif st.session_state.current_view == "search":
             st.markdown("<div class='warning-message'> No books found matching your search. </div>",unsafe_allow_html=True)
 
 elif st.session_state.current_view == "stats":
-    st.markdown("<h2 class='sub-header'> Library Statistics </h2>",unsafe_allow_html=True)
+    st.markdown("<h2 class='sub-header'> Library Statistics </h2>", unsafe_allow_html=True)
 
     if not st.session_state.library:
-        st.markdown("<div class='warning-message'> Your Library is Empty. Add some books to see stats ! </div>",unsafe_allow_html=True)
-
-    else :
+        st.markdown("<div class='warning-message'> Your Library is Empty. Add some books to see stats! </div>", unsafe_allow_html=True)
+    else:
         stats = get_library_stats()
-        col1,col2,col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Total Books ",stats["total_books"])
+            st.metric("Total Books", stats["total_books"])
         with col2:
-            st.metric("Books Read",stats["read_books"])
+            st.metric("Books Read", stats["read_books"])
         with col3:
-            st.metric("Percentage Read ", f"{stats['percent_read']:.1f}%")
+            st.metric("Percentage Read", f"{stats['percent_read']:.1f}%")
 
-        create_visulations()
+        create_visulations(stats)  # Pass stats here
 
         if stats["authers"]:
-            st.markdown("<h3> Top Authers </h3>",unsafe_allow_html=True)
+            st.markdown("<h3> Top Authers </h3>", unsafe_allow_html=True)
             top_authers = dict(list(stats["authers"].items())[:5])
-            for auther,count in top_authers.items():
+            for auther, count in top_authers.items():
                 st.markdown(f"**{auther}**: {count} book{'s' if count > 1 else ''}")
+
 st.markdown("---")
 st.markdown("Copywright @ Nisar Ahmed Personal Library Manager",unsafe_allow_html=True)
         
