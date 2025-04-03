@@ -1,6 +1,6 @@
-streamlit == 1.32.0
+streamlit == 1.43.1
 pandas == 2.2.0
-plotly == 5.18.0
+plotly == 25.0.1
 streamlit-lottie == 0.0.5
 requests == 2.31.0
 
